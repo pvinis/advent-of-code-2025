@@ -12,19 +12,17 @@ async function main() {
 		const dir = line[0]
 		const num = parseInt(line.slice(1))
 
-		if (dir === "L") {
-			dial -= num
-		} else if (dir === "R") {
-			dial += num
+		for (let i = 0; i < num; i++) {
+			if (dir === "L") {
+				dial = dial === 0 ? 99 : dial - 1
+			} else {
+				dial = dial === 99 ? 0 : dial + 1
+			}
+
+			if (dial === 0) {
+				count++
+			}
 		}
-
-		count += Math.floor(num / 100)
-
-		if (dial < 0 || dial > 99) {
-			count++
-		}
-
-		dial = ((dial % 100) + 100) % 100
 	}
 
 	console.log("answer:")
