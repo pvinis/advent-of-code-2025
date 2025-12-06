@@ -27,6 +27,6 @@ async function main() {
 		dial = ((dial % 100) + 100) % 100
 	}
 
-	console.log("password is:")
+	console.log("answer:")
 	console.log(count)
 }

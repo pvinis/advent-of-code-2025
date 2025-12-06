@@ -25,6 +25,6 @@ async function main() {
 		}
 	}
 
-	console.log("password is:")
+	console.log("answer:")
 	console.log(count)
 }
