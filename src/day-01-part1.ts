@@ -13,9 +13,9 @@ async function main() {
 		const num = parseInt(line.slice(1))
 
 		if (dir === "L") {
-			dial += num
-		} else if (dir === "R") {
 			dial -= num
+		} else if (dir === "R") {
+			dial += num
 		}
 
 		dial = ((dial % 100) + 100) % 100

@@ -13,12 +13,14 @@ async function main() {
 		const num = parseInt(line.slice(1))
 
 		if (dir === "L") {
-			dial += num
-		} else if (dir === "R") {
 			dial -= num
+		} else if (dir === "R") {
+			dial += num
 		}
 
-		if (dial <= 0 || dial > 99) {
+		count += Math.floor(num / 100)
+
+		if (dial < 0 || dial > 99) {
 			count++
 		}
 
