@@ -1,9 +1,30 @@
-console.log("Hello, Day 01!")
+import { readLines } from "./utils/input"
 
-let dial = 50
-let count = 0
+main()
 
-// for each line:
-// L: +n
-// R: -n
-// if dial on 0, count++
+async function main() {
+	const lines = await readLines(process.env.INPUT_FILE!)
+
+	let dial = 50
+	let count = 0
+
+	for (const line of lines) {
+		const dir = line[0]
+		const num = parseInt(line.slice(1))
+
+		if (dir === "L") {
+			dial += num
+		} else if (dir === "R") {
+			dial -= num
+		}
+
+		dial = ((dial % 100) + 100) % 100
+
+		if (dial === 0) {
+			count++
+		}
+	}
+
+	console.log("password is:")
+	console.log(count)
+}
