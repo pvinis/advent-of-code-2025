@@ -1,22 +1,24 @@
 # Day 4 - Printing Department
 
-## Puzzle Description
+> https://adventofcode.com/2025/day/4
 
-Grid-based puzzle involving `@` characters representing print positions.
+## What We Need To Do
+
+A grid contains `@` characters. We care about diagonal neighbors (all 8 directions).
 
 ### Part One
+
 Count all `@` characters that have fewer than 4 diagonal neighbors that are also `@`.
 
+These are the "edge" or "boundary" cells.
+
 ### Part Two
-Implement a flood-fill removal algorithm:
-1. Remove all `@` with <4 diagonal `@` neighbors
-2. This may cause other `@` to now have <4 neighbors
-3. Repeat until no more can be removed
-4. Count total removed
 
-## Algorithm Notes (from maneatingape)
+Remove cells iteratively:
 
-- Creates a padded grid with neighbor counts
-- Uses a work queue for efficient processing
-- Part 1: Simply count boundary `@` characters
-- Part 2: Process positions iteratively, decrementing neighbor counts and adding newly qualifying positions to the queue
+1. Find all `@` with fewer than 4 `@` neighbors
+2. Remove them from the grid
+3. This may cause other `@` to now have fewer than 4 neighbors
+4. Repeat until no more can be removed
+
+Count the total number of `@` removed.

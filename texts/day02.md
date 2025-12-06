@@ -1,28 +1,23 @@
 # Day 2 - Gift Shop
 
-## Puzzle Description
+> https://adventofcode.com/2025/day/2
 
-Calculate cumulative costs for items based on numeric patterns in ranges.
+## What We Need To Do
+
+Given comma-separated ranges of numbers (e.g., `100-200,500-600`), find numbers with special patterns.
 
 ### Part One
-Find "double" numbers - numbers where the left half equals the right half (must have even digit count).
 
-Examples: 1212, 5555, 123123
+Find "double" numbers - numbers where the left half equals the right half. Must have an even number of digits.
+
+Examples: `1212`, `5555`, `123123`
+
+Sum all matching numbers across all ranges.
 
 ### Part Two
-Find "repeating" patterns - numbers that can be expressed as a pattern repeated multiple times.
 
-Examples: 123123 (123 x 2), 1111 (1 x 4), 121212 (12 x 3)
+Find "repeating" numbers - numbers that are a pattern repeated multiple times.
 
-## Input Format
-Comma-separated ranges: `from-to,from-to,...`
+Examples: `123123` (123 repeated 2x), `1111` (1 repeated 4x), `121212` (12 repeated 3x)
 
-## Algorithm Notes (from maneatingape)
-
-The Rust solution uses mathematical optimization:
-- Predefined digit/size constants define pricing tiers
-- Calculates geometric progressions within ranges
-- Uses triangular number formula for efficient summation
-- Avoids iterating through all individual values
-
-The simple approach (used here) iterates through all numbers and checks each one.
+Sum all matching numbers across all ranges.

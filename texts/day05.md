@@ -1,29 +1,20 @@
 # Day 5 - Cafeteria
 
-## Puzzle Description
+> https://adventofcode.com/2025/day/5
 
-Process seat ranges and individual seat IDs.
+## What We Need To Do
 
-### Input Format
-```
-from-to
-from-to
-...
+Input has two sections separated by a blank line:
 
-id
-id
-...
-```
+1. Ranges (one per line, like `100-200`)
+2. Individual IDs (one per line)
 
 ### Part One
-Count how many individual IDs fall within any of the given ranges.
+
+Count how many of the individual IDs fall within any of the given ranges.
 
 ### Part Two
-Merge overlapping ranges and sum their total sizes.
 
-## Algorithm Notes (from maneatingape)
+Merge overlapping/adjacent ranges and calculate the total size (how many numbers are covered).
 
-- Sort ranges and IDs for efficient processing
-- Merge overlapping ranges using interval overlap detection
-- Part 1: Use binary search to locate where boundaries fall within sorted IDs
-- Part 2: Sum the sizes of all merged ranges
+Example: ranges `1-5` and `3-8` merge into `1-8`, which covers 8 numbers.

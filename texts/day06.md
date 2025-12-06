@@ -1,24 +1,37 @@
 # Day 6 - Trash Compactor
 
-## Puzzle Description
+> https://adventofcode.com/2025/day/6
 
-Grid with numbers arranged in columns, with operators (`+` or `*`) at the bottom row.
+## What We Need To Do
+
+A grid has numbers arranged in columns. The last row contains operators (`+` or `*`) that mark column boundaries.
+
+Example:
+
+```
+123 328  51
+ 45 64  387
+  6 98  215
+*   +   *
+```
+
+Each operator defines a column section. Extract numbers from that section and apply the operator.
 
 ### Part One
-For each column section:
-1. Extract numbers reading row-by-row
-2. Apply the operator at the bottom (sum or product)
-3. Sum all column results
+
+Read numbers **row by row** within each column section:
+
+- Column 1 (`*`): 123, 45, 6 → product
+- Column 2 (`+`): 328, 64, 98 → sum
+- Column 3 (`*`): 51, 387, 215 → product
+
+Sum all results.
 
 ### Part Two
-For each column section:
-1. Extract numbers reading column-by-column
-2. Apply the operator at the bottom
-3. Sum all column results
 
-## Algorithm Notes (from maneatingape)
+Read numbers **column by column** (top to bottom for each x position):
 
-- Process columns from right to left
-- Track column boundaries based on operator positions
-- The `acc` function builds multi-digit numbers by scanning within boundaries
-- Simultaneously calculates both part results during parsing
+- Build numbers by reading digits vertically
+- Apply the same operators
+
+Sum all results.

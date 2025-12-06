@@ -1,22 +1,21 @@
 # Day 3 - Lobby
 
-## Puzzle Description
+> https://adventofcode.com/2025/day/3
 
-Process sequences of digits to form the largest possible number by selecting a subset.
+## What We Need To Do
+
+Each line contains a sequence of digits. Pick digits from each line to form the largest possible number.
 
 ### Part One
-Select 2 digits from each line to form the maximum 2-digit number.
+
+Pick any 2 digits (in order, left to right) from each line to form the maximum 2-digit number.
+
+Example: from `38291` you could pick `3+8=38`, `3+9=39`, `8+9=89`, `9+1=91`, etc. The max is `91`.
+
+Sum all the maximums.
 
 ### Part Two
-Select 12 digits from each line to form the maximum 12-digit number.
 
-## Algorithm Notes (from maneatingape)
+Same thing, but pick 12 digits to form the maximum 12-digit number.
 
-Uses a greedy swap mechanism:
-- Maintains an array of N batteries (N=2 for Part 1, N=12 for Part 2)
-- Iterates through digits right-to-left
-- Performs conditional swaps using `std::mem::replace`
-- Terminates swaps when encountering smaller values
-- Converts final digit array into a decimal number
-
-The key insight: iterate in reverse, maintaining the largest N digits seen so far in sorted order.
+Use a greedy approach: for each position, pick the largest digit that still leaves enough digits remaining.

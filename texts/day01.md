@@ -1,21 +1,15 @@
 # Day 1 - Secret Entrance
 
-## Puzzle Description
+> https://adventofcode.com/2025/day/1
 
-The puzzle involves a **dial mechanism** with directional commands:
+## What We Need To Do
 
-- **Directions**: R (right) or L (left)
-- **Amounts**: Signed integers accompanying each direction
-- **Starting position**: Dial begins at 50 (on a 0-99 scale)
+There's a dial that starts at position 50 (on a 0-99 scale). Each instruction tells us to turn it Right or Left by some amount.
 
 ### Part One
-Count the number of times the dial reaches exactly position 0 after processing an instruction.
+
+Count how many times the dial lands exactly on 0 after processing an instruction.
 
 ### Part Two
-Count every time the dial crosses through 0 (passes through). Left turns are easier if you first "reverse" the dial position (100 - dial), then treat it as a right turn.
 
-## Algorithm Notes (from maneatingape)
-
-- Right turns: track overflow with `(dial + amount) / 100`, update dial with modulo 100
-- Left turns: reverse dial position first, apply same logic
-- Uses `rem_euclid` for proper modulo handling of negative numbers
+Count how many times the dial passes through 0 (crosses it). For example, if the dial is at 10 and we turn right by 25, we pass through 0 once and end up at 35.
