@@ -11,4 +11,5 @@ if (!day || !part || !inputType) {
 const inputFile = inputType === "test" ? "test.txt" : "input.txt"
 process.env.INPUT_FILE = `input/${day}/${inputFile}`
 
-await import(`./src/day-${day}-part${part}.ts`)
+const paddedPart = part.padStart(2, "0")
+await import(`./src/day${day}-part${paddedPart}.ts`)
