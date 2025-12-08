@@ -55,7 +55,8 @@ async function main() {
 		}
 	}
 
-	for (let k = 0; k < 10; k++) {
+	const numConnections = 1000
+	for (let k = 0; k < numConnections; k++) {
 		union(pairs[k].i, pairs[k].j)
 	}
 
