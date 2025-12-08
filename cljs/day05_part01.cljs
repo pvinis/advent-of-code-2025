@@ -2,24 +2,30 @@
   (:require [utils.input :refer [read-lines]]
             [clojure.string :as str]))
 
+(defn parse-input [lines]
+  (let [empty-idx (.indexOf lines "")
+        range-lines (take empty-idx lines)
+        id-lines (drop (inc empty-idx) lines)
+        ranges (->> range-lines
+                    (map (fn [line]
+                           (let [[s e] (str/split line #"-")]
+                             [(js/parseInt s) (js/parseInt e)]))))
+        ids (->> id-lines
+                 (map js/parseInt))]
+    [ranges ids]))
+
+(defn in-any-range? [ranges n]
+  (some (fn [[start end]]
+          (and (>= n start) (<= n end)))
+        ranges))
+
 (defn solve []
   (let [lines (read-lines *input-file*)
-        empty-idx (.indexOf lines "")
-        range-lines (take empty-idx lines)
-        number-lines (drop (inc empty-idx) lines)
-        ranges (map (fn [line]
-                      (let [[start end] (map js/parseInt (str/split line #"-"))]
-                        {:start start :end end}))
-                    range-lines)
-        numbers (map js/parseInt number-lines)
-        count (reduce
-               (fn [cnt num]
-                 (if (some #(and (>= num (:start %)) (<= num (:end %))) ranges)
-                   (inc cnt)
-                   cnt))
-               0
-               numbers)]
+        [ranges ids] (parse-input lines)
+        cnt (->> ids
+                 (filter #(in-any-range? ranges %))
+                 count)]
     (println "answer:")
-    (println count)))
+    (println cnt)))
 
 (solve)

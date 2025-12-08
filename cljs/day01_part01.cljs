@@ -1,23 +1,29 @@
 (ns solutions.day01-part01
-  (:require [utils.input :refer [read-lines]]))
+  (:require [utils.input :refer [read-lines]]
+            [clojure.string :as str]))
+
+(defn parse-instruction [line]
+  (let [dir (first line)
+        amount (js/parseInt (subs line 1))]
+    [dir amount]))
 
 (defn solve []
-  (let [lines (read-lines *input-file*)]
-    (loop [lines lines
-           dial 50
-           count 0]
-      (if (empty? lines)
-        (do
-          (println "answer:")
-          (println count))
-        (let [line (first lines)
-              dir (first line)
-              num (js/parseInt (subs line 1))
-              new-dial (if (= dir \L)
-                         (- dial num)
-                         (+ dial num))
-              normalized (mod (+ (mod new-dial 100) 100) 100)
-              new-count (if (zero? normalized) (inc count) count)]
-          (recur (rest lines) normalized new-count))))))
+  (let [lines (read-lines *input-file*)
+        instructions (map parse-instruction lines)
+        {:keys [count]}
+        (reduce
+         (fn [{:keys [dial count]} [dir amount]]
+           (let [new-dial (-> (if (= dir \R)
+                                (+ dial amount)
+                                (- dial amount))
+                              (mod 100)
+                              (+ 100)
+                              (mod 100))]
+             {:dial new-dial
+              :count (if (zero? new-dial) (inc count) count)}))
+         {:dial 50 :count 0}
+         instructions)]
+    (println "answer:")
+    (println count)))
 
 (solve)

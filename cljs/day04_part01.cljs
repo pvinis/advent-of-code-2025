@@ -1,38 +1,32 @@
 (ns solutions.day04-part01
   (:require [utils.input :refer [read-lines]]))
 
-(defn count-neighbors [lines y x]
-  (let [height (count lines)
-        width (count (nth lines y))]
-    (reduce
-     (fn [cnt [dy dx]]
-       (if (and (= dy 0) (= dx 0))
-         cnt
-         (let [ny (+ y dy)
-               nx (+ x dx)]
-           (if (and (>= ny 0) (< ny height)
-                    (>= nx 0) (< nx (count (nth lines ny)))
-                    (= (nth (nth lines ny) nx) \@))
-             (inc cnt)
-             cnt))))
-     0
-     (for [dy (range -1 2) dx (range -1 2)] [dy dx]))))
+(def diagonal-offsets
+  [[-1 -1] [-1 0] [-1 1]
+   [0 -1]         [0 1]
+   [1 -1]  [1 0]  [1 1]])
+
+(defn get-cell [grid y x]
+  (when (and (>= y 0) (< y (count grid))
+             (>= x 0) (< x (count (nth grid y))))
+    (nth (nth grid y) x)))
+
+(defn count-diagonal-neighbors [grid y x]
+  (->> diagonal-offsets
+       (filter (fn [[dy dx]]
+                 (= (get-cell grid (+ y dy) (+ x dx)) \@)))
+       count))
 
 (defn solve []
   (let [lines (read-lines *input-file*)
-        count (reduce
-               (fn [cnt y]
-                 (reduce
-                  (fn [cnt2 x]
-                    (if (and (= (nth (nth lines y) x) \@)
-                             (< (count-neighbors lines y x) 4))
-                      (inc cnt2)
-                      cnt2))
-                  cnt
-                  (range (count (nth lines y)))))
-               0
-               (range (count lines)))]
+        boundary-count
+        (->> (for [y (range (count lines))
+                   x (range (count (nth lines y)))
+                   :when (= (nth (nth lines y) x) \@)
+                   :when (< (count-diagonal-neighbors lines y x) 4)]
+               1)
+             count)]
     (println "answer:")
-    (println count)))
+    (println boundary-count)))
 
 (solve)

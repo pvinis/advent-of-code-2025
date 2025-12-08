@@ -2,26 +2,28 @@
   (:require [utils.input :refer [read-lines]]
             [clojure.string :as str]))
 
+(defn double-number? [n]
+  (let [s (str n)
+        len (count s)]
+    (and (even? len)
+         (let [half (/ len 2)]
+           (= (subs s 0 half) (subs s half))))))
+
+(defn parse-ranges [line]
+  (->> (str/split line #",")
+       (map (fn [pair]
+              (let [[low high] (str/split pair #"-")]
+                [(js/parseInt low) (js/parseInt high)])))))
+
 (defn solve []
   (let [lines (read-lines *input-file*)
-        input (first lines)
-        pairs (str/split input #",")
-        doubles (for [pair pairs
-                      :let [[low-str high-str] (str/split pair #"-")
-                            low (js/parseInt low-str)
-                            high (js/parseInt high-str)]
-                      :when (not (and (= (count low-str) (count high-str))
-                                      (odd? (count low-str))))
+        ranges (parse-ranges (first lines))
+        doubles (for [[low high] ranges
                       n (range low (inc high))
-                      :let [s (str n)]
-                      :when (even? (count s))
-                      :let [half (/ (count s) 2)
-                            left (subs s 0 half)
-                            right (subs s half)]
-                      :when (= left right)]
+                      :when (double-number? n)]
                   n)
-        sum (reduce + 0 doubles)]
+        total (reduce + 0 doubles)]
     (println "answer:")
-    (println sum)))
+    (println total)))
 
 (solve)

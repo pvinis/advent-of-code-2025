@@ -1,43 +1,41 @@
 (ns solutions.day04-part02
   (:require [utils.input :refer [read-lines]]))
 
-(defn count-neighbors [grid y x]
-  (let [height (count grid)
-        width (count (nth grid y))]
-    (reduce
-     (fn [cnt [dy dx]]
-       (if (and (= dy 0) (= dx 0))
-         cnt
-         (let [ny (+ y dy)
-               nx (+ x dx)]
-           (if (and (>= ny 0) (< ny height)
-                    (>= nx 0) (< nx (count (nth grid ny)))
-                    (= (nth (nth grid ny) nx) \@))
-             (inc cnt)
-             cnt))))
-     0
-     (for [dy (range -1 2) dx (range -1 2)] [dy dx]))))
+(def diagonal-offsets
+  [[-1 -1] [-1 0] [-1 1]
+   [0 -1]         [0 1]
+   [1 -1]  [1 0]  [1 1]])
 
-(defn find-to-remove [grid]
+(defn get-cell [grid y x]
+  (when (and (>= y 0) (< y (count grid))
+             (>= x 0) (< x (count (nth grid y))))
+    (get-in grid [y x])))
+
+(defn count-diagonal-neighbors [grid y x]
+  (->> diagonal-offsets
+       (filter (fn [[dy dx]]
+                 (= (get-cell grid (+ y dy) (+ x dx)) \@)))
+       count))
+
+(defn find-removable [grid]
   (for [y (range (count grid))
         x (range (count (nth grid y)))
-        :when (and (= (nth (nth grid y) x) \@)
-                   (< (count-neighbors grid y x) 4))]
+        :when (= (get-in grid [y x]) \@)
+        :when (< (count-diagonal-neighbors grid y x) 4)]
     [y x]))
 
 (defn remove-cells [grid cells]
-  (reduce
-   (fn [g [y x]]
-     (assoc g y (assoc (nth g y) x \.)))
-   grid
-   cells))
+  (reduce (fn [g [y x]]
+            (assoc-in g [y x] \.))
+          grid
+          cells))
 
 (defn solve []
   (let [lines (read-lines *input-file*)
-        grid (vec (map vec lines))]
+        grid (mapv vec lines)]
     (loop [g grid
            total 0]
-      (let [to-remove (find-to-remove g)]
+      (let [to-remove (find-removable g)]
         (if (empty? to-remove)
           (do
             (println "answer:")

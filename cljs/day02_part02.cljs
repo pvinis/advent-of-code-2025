@@ -2,28 +2,30 @@
   (:require [utils.input :refer [read-lines]]
             [clojure.string :as str]))
 
-(defn repeating? [s]
+(defn repeating-pattern? [s]
   (let [len (count s)]
-    (some (fn [pattern-len]
-            (when (zero? (mod len pattern-len))
-              (let [pattern (subs s 0 pattern-len)
-                    repeated (apply str (repeat (/ len pattern-len) pattern))]
-                (= repeated s))))
-          (range 1 (inc (/ len 2))))))
+    (->> (range 1 (inc (/ len 2)))
+         (some (fn [pattern-len]
+                 (when (zero? (mod len pattern-len))
+                   (let [pattern (subs s 0 pattern-len)
+                         times (/ len pattern-len)]
+                     (= s (apply str (repeat times pattern))))))))))
+
+(defn parse-ranges [line]
+  (->> (str/split line #",")
+       (map (fn [pair]
+              (let [[low high] (str/split pair #"-")]
+                [(js/parseInt low) (js/parseInt high)])))))
 
 (defn solve []
   (let [lines (read-lines *input-file*)
-        input (first lines)
-        pairs (str/split input #",")
-        invalids (for [pair pairs
-                       :let [[low-str high-str] (str/split pair #"-")
-                             low (js/parseInt low-str)
-                             high (js/parseInt high-str)]
-                       n (range low (inc high))
-                       :when (repeating? (str n))]
-                   n)
-        sum (reduce + 0 invalids)]
+        ranges (parse-ranges (first lines))
+        repeating (for [[low high] ranges
+                        n (range low (inc high))
+                        :when (repeating-pattern? (str n))]
+                    n)
+        total (reduce + 0 repeating)]
     (println "answer:")
-    (println sum)))
+    (println total)))
 
 (solve)

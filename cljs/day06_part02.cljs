@@ -1,4 +1,4 @@
-(ns solutions.day06-part01-v2
+(ns solutions.day06-part02
   (:require [utils.input :refer [read-lines]]
             [clojure.string :as str]))
 
@@ -10,14 +10,20 @@
         op-line)
        vec))
 
-(defn extract-column-numbers [data-lines start-col end-col]
-  (->> data-lines
-       (keep (fn [line]
-               (when (< start-col (count line))
-                 (let [slice (subs line start-col (min end-col (count line)))
-                       trimmed (str/trim slice)]
-                   (when (seq trimmed)
-                     (js/BigInt (js/parseInt trimmed)))))))))
+(defn extract-numbers-by-column [data-lines start-col end-col]
+  (let [height (count data-lines)]
+    (->> (range start-col end-col)
+         (keep (fn [x]
+                 (let [num-str (->> (range height)
+                                    (keep (fn [y]
+                                            (let [line (nth data-lines y)]
+                                              (when (< x (count line))
+                                                (let [ch (nth line x)]
+                                                  (when (not= ch \space)
+                                                    ch))))))
+                                    (apply str))]
+                   (when (seq num-str)
+                     (js/BigInt (js/parseInt num-str)))))))))
 
 (defn solve []
   (let [lines (read-lines *input-file*)
@@ -35,7 +41,7 @@
                                 end-col (if (< i (dec (count operators)))
                                           (:pos (nth operators (inc i)))
                                           max-len)
-                                nums (extract-column-numbers data-lines pos end-col)]
+                                nums (extract-numbers-by-column data-lines pos end-col)]
                             (if (= op \+)
                               (reduce + (js/BigInt 0) nums)
                               (reduce * (js/BigInt 1) nums)))))

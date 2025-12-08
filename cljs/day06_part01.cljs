@@ -2,45 +2,44 @@
   (:require [utils.input :refer [read-lines]]
             [clojure.string :as str]))
 
-(defn find-columns [line]
-  (keep-indexed
-   (fn [i ch]
-     (when (or (= ch \+) (= ch \*))
-       {:start i :op (str ch)}))
-   line))
+(defn find-operator-positions [op-line]
+  (->> (keep-indexed
+        (fn [i ch]
+          (when (or (= ch \+) (= ch \*))
+            {:pos i :op ch}))
+        op-line)
+       vec))
+
+(defn extract-column-numbers [data-lines start-col end-col]
+  (->> data-lines
+       (keep (fn [line]
+               (when (< start-col (count line))
+                 (let [slice (subs line start-col (min end-col (count line)))
+                       trimmed (str/trim slice)]
+                   (when (seq trimmed)
+                     (js/BigInt (js/parseInt trimmed)))))))))
 
 (defn solve []
   (let [lines (read-lines *input-file*)
-        op-line-idx (reduce
-                     (fn [_ i]
-                       (when (or (str/includes? (nth lines i) "+")
-                                 (str/includes? (nth lines i) "*"))
-                         (reduced i)))
-                     nil
-                     (range (count lines)))
-        last-line (nth lines op-line-idx)
+        op-line-idx (->> (range (count lines))
+                         (filter #(or (str/includes? (nth lines %) "+")
+                                      (str/includes? (nth lines %) "*")))
+                         first)
+        op-line (nth lines op-line-idx)
         data-lines (take op-line-idx lines)
-        columns (vec (find-columns last-line))
-        max-line-len (apply max (map count data-lines))
-        total (reduce
-               (fn [acc c]
-                 (let [{:keys [start op]} (nth columns c)
-                       end-col (if (< c (dec (count columns)))
-                                 (dec (:start (nth columns (inc c))))
-                                 max-line-len)
-                       numbers (keep
-                                (fn [line]
-                                  (when (> (count line) start)
-                                    (let [slice (str/trim (subs line start (min end-col (count line))))]
-                                      (when (seq slice)
-                                        (js/parseInt slice)))))
-                                data-lines)
-                       result (if (= op "+")
-                                (reduce (fn [a n] (+ a (js/BigInt n))) (js/BigInt 0) numbers)
-                                (reduce (fn [a n] (* a (js/BigInt n))) (js/BigInt 1) numbers))]
-                   (+ acc result)))
-               (js/BigInt 0)
-               (range (count columns)))]
+        operators (find-operator-positions op-line)
+        max-len (apply max (map count data-lines))
+        total (->> (range (count operators))
+                   (map (fn [i]
+                          (let [{:keys [pos op]} (nth operators i)
+                                end-col (if (< i (dec (count operators)))
+                                          (:pos (nth operators (inc i)))
+                                          max-len)
+                                nums (extract-column-numbers data-lines pos end-col)]
+                            (if (= op \+)
+                              (reduce + (js/BigInt 0) nums)
+                              (reduce * (js/BigInt 1) nums)))))
+                   (reduce +))]
     (println "answer:")
     (println (.toString total))))
 
